@@ -36,5 +36,4 @@ jobs:
           to: kiran.sahoo@kmart.com.au  # Replace with your email address
           subject: Kmart Link Check Results ({{ github.run_id }})
           body: |
-            Check log file (link_check_log.txt) for details.
             Verified failed links (verified_failed_links.txt) might require further investigation.
