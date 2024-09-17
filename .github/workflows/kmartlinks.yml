@@ -1,0 +1,56 @@
+name: Link Checker (Kmart)
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs daily at 12 AM
+
+jobs:
+  link_check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python environment
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.8'  # Adjust if needed
+
+      - name: Install dependencies
+        run: |
+          python -m pip install requests beautifulsoup4 urllib3 concurrent.futures logging
+
+      - name: Run the Python script
+        run: |
+          python main.py
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: link_check_results
+          path: |
+            verified_failed_links.txt
+
+      - name: Send results to Slack (replace with your details)
+        uses: EnricoMi/slack-action@v1
+        with:
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel: '#your-slack-channel'  # Replace with your channel
+          text: "**Kmart Link Check Results ({{ github.run_id }})**\n* Check log file (link_check_log.txt) for details.\n* Verified failed links (verified_failed_links.txt) might require further investigation."
+          blocks: |
+            [
+              {
+                "type": "section",
+                "fields": [
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Start Time:* {{ started_at }}"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Completion Time:* {{ completed_at }}"
+                  }
+                ]
+              }
+            ]
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
