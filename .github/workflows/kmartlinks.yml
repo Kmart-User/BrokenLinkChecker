@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install requests beautifulsoup4 urllib3 concurrent.futures logging
+          python -m pip install requests beautifulsoup4 urllib3 logging
 
       - name: Run the Python script
         run: |
