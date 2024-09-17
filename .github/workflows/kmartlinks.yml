@@ -21,7 +21,7 @@ jobs:
 
       - name: Run the Python script
         run: |
-          python main.py
+          python aulinkcheck.py
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
@@ -30,27 +30,11 @@ jobs:
           path: |
             verified_failed_links.txt
 
-      - name: Send results to Slack (replace with your details)
-        uses: EnricoMi/slack-action@v1
+      - name: Send email notification
+        uses: actions/send-mail@v3
         with:
-          token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel: '#your-slack-channel'  # Replace with your channel
-          text: "**Kmart Link Check Results ({{ github.run_id }})**\n* Check log file (link_check_log.txt) for details.\n* Verified failed links (verified_failed_links.txt) might require further investigation."
-          blocks: |
-            [
-              {
-                "type": "section",
-                "fields": [
-                  {
-                    "type": "mrkdwn",
-                    "text": "*Start Time:* {{ started_at }}"
-                  },
-                  {
-                    "type": "mrkdwn",
-                    "text": "*Completion Time:* {{ completed_at }}"
-                  }
-                ]
-              }
-            ]
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          to: kiran.sahoo@kmart.com.au  # Replace with your email address
+          subject: Kmart Link Check Results ({{ github.run_id }})
+          body: |
+            Check log file (link_check_log.txt) for details.
+            Verified failed links (verified_failed_links.txt) might require further investigation.
